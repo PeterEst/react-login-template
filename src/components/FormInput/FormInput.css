@@ -1,0 +1,18 @@
+.formInput__container{
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    margin: 10px 0px;
+}
+
+input {
+  padding: 15px;
+  margin: 10px 0 3px 0;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.formInput__error{
+    color: #014d90;
+    font-size: 14px;
+}
