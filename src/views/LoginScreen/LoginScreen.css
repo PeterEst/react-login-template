@@ -8,6 +8,11 @@
   background-position: center;
 }
 
+.login__form__container{
+  display: flex;
+  flex-direction: column;
+}
+
 .login__form {
   background-color: white;
   width: 500px;
@@ -25,8 +30,7 @@
 }
 
 .login__button {
-  width: 100%;
-  height: 50px;
+  align-self: center;
   padding: 10px;
   border: none;
   background-color: #014d90;
@@ -35,6 +39,7 @@
   font-weight: bold;
   font-size: 18px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 header {

@@ -3,6 +3,7 @@ import "./LoginScreen.css";
 import FormInput from "../../components/FormInput/FormInput";
 import UsernameValidator from "../../utils/UsernameValidator";
 import PasswordValidator from "../../utils/PasswordValidator";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = React.useState({
@@ -86,7 +87,9 @@ const Login = () => {
               }
             />
           ))}
-          <button className="login__button">Login</button>
+          <Link to="/" className="login__button">
+            Login
+          </Link>
         </div>
       </form>
     </div>
