@@ -3,9 +3,13 @@ import "./LoginScreen.css";
 import FormInput from "../../components/FormInput/FormInput";
 import UsernameValidator from "../../utils/UsernameValidator";
 import PasswordValidator from "../../utils/PasswordValidator";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { handleLogin } = React.useContext(AuthContext);
+
   const [username, setUsername] = React.useState({
     value: "",
     errorMessage: "",
@@ -52,7 +56,8 @@ const Login = () => {
     }
 
     if (isValid) {
-      alert("Login Successful");
+      handleLogin(username.value, password.value);
+      navigate("/");
     }
   };
 
@@ -87,9 +92,7 @@ const Login = () => {
               }
             />
           ))}
-          <Link to="/" className="login__button">
-            Login
-          </Link>
+          <button className="login__button">Login</button>
         </div>
       </form>
     </div>

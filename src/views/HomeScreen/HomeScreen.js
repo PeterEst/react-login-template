@@ -1,7 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { user, handleLogout } = React.useContext(AuthContext);
+
+  const logoutUser = () => {
+    handleLogout();
+    navigate("/");
+  };
+
   return (
     <div
       style={{
@@ -13,7 +22,8 @@ const Home = () => {
       }}
     >
       <h1>Home</h1>
-      <Link to={"/Login"}>Logout</Link>
+      <h2>Welcome {user.username}</h2>
+      <button onClick={logoutUser}>Logout</button>
     </div>
   );
 };
