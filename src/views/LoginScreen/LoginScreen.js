@@ -1,32 +1,35 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import "./LoginScreen.css";
 import FormInput from "../../components/FormInput/FormInput";
-import UsernameValidator from "../../utils/UsernameValidator";
+import EmailValidator from "../../utils/EmailValidator";
 import PasswordValidator from "../../utils/PasswordValidator";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { handleLogin } = React.useContext(AuthContext);
+  const { checkUser } = useContext(AuthContext);
 
-  const [username, setUsername] = React.useState({
+  const [email, setEmail] = useState({
     value: "",
     errorMessage: "",
   });
 
-  const [password, setPassword] = React.useState({
+  const [password, setPassword] = useState({
     value: "",
     errorMessage: "",
   });
+
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
 
   const inputs = [
     {
       id: 1,
-      placeholder: "Username",
+      placeholder: "Email",
       type: "text",
-      label: "Username",
-      name: "username",
+      label: "Email",
+      name: "email",
     },
     {
       id: 2,
@@ -37,36 +40,54 @@ const Login = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isValid = true;
 
-    // username validation
-    const usernameError = UsernameValidator(username.value);
-    if (usernameError) {
-      setUsername({ ...username, errorMessage: usernameError });
+    // email validation
+    const emailError = EmailValidator(email.value);
+    if (emailError) {
+      setEmail({ ...email, errorMessage: emailError });
       isValid = false;
     }
 
     // password validation
-    const passwordError = PasswordValidator(password.value);
+    const passwordError = PasswordValidator(password.value, false);
     if (passwordError) {
       setPassword({ ...password, errorMessage: passwordError });
       isValid = false;
     }
 
     if (isValid) {
-      handleLogin(username.value, password.value);
-      navigate("/");
+      axios
+        .post(
+          "http://localhost:3300/login",
+          {
+            email: email.value,
+            password: password.value,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res.data);
+          checkUser();
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err);
+          setServerErrorMessage(err.response.data.errors);
+        });
     }
   };
 
   const onChange = (e) => {
     const { name, value } = e.target;
-    if (name === "username") {
-      setUsername({ value, errorMessage: "" });
+    if (name === "email") {
+      setEmail({ value, errorMessage: "" });
+      setServerErrorMessage("");
     } else if (name === "password") {
       setPassword({ value, errorMessage: "" });
+      setServerErrorMessage("");
     }
   };
 
@@ -81,18 +102,25 @@ const Login = () => {
             <FormInput
               key={input.id}
               {...input}
-              value={
-                input.name === "username" ? username.value : password.value
-              }
+              value={input.name === "email" ? email.value : password.value}
               onChange={onChange}
               errorMessage={
-                input.name === "username"
-                  ? username.errorMessage
+                input.name === "email"
+                  ? email.errorMessage
                   : password.errorMessage
               }
             />
           ))}
-          <button className="login__button">Login</button>
+          {serverErrorMessage && (
+            <p className="__server__error__message">{serverErrorMessage}</p>
+          )}
+          <button className="__button">Login</button>
+          <Link
+            to={"/register"}
+            style={{ color: "#014d90", textAlign: "center", marginTop: 10 }}
+          >
+            Register Here
+          </Link>
         </div>
       </form>
     </div>
